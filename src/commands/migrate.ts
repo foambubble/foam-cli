@@ -1,6 +1,7 @@
 import GithubSlugger from 'github-slugger';
 import { Command, flags } from '@oclif/command';
 import ora from 'ora';
+import { MarkdownResourceProvider } from "../core/markdown-provider";
 import { bootstrap } from '../core/model/foam';
 import { URI } from '../core/model/uri';
 import { Resource } from '../core/model/note';
@@ -55,9 +56,10 @@ Successfully generated link references and heading!
       []
     );
     const dataStore = new FileDataStore();
+    const markdownProvider = new MarkdownResourceProvider(matcher);
 
     if (isValidDirectory(workspacePath)) {
-      let workspace = (await bootstrap(matcher, dataStore, [])).workspace;
+      let workspace = (await bootstrap(matcher, dataStore, [markdownProvider])).workspace;
 
       let notes = workspace.list().filter(isNote);
 
@@ -86,7 +88,7 @@ Successfully generated link references and heading!
       spinner.text = 'Renaming files';
 
       // Reinitialize the graph after renaming files
-      workspace = (await bootstrap(matcher, dataStore, [])).workspace;
+      workspace = (await bootstrap(matcher, dataStore, [markdownProvider])).workspace;
 
       notes = workspace.list().filter(isNote);
 
