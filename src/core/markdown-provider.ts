@@ -239,10 +239,12 @@ const sectionsPlugin: ParserPlugin = {
         sectionStack[sectionStack.length - 1].level >= level
       ) {
         const section = sectionStack.pop();
-        note.sections.push({
-          label: section.label,
-          range: Range.createFromPosition(section.start, start),
-        });
+        if (section) {
+          note.sections.push({
+            label: section.label,
+            range: Range.createFromPosition(section.start, start),
+          });
+        }
       }
 
       // Add the new section to the stack
@@ -254,10 +256,12 @@ const sectionsPlugin: ParserPlugin = {
     // Close all the remainig sections
     while (sectionStack.length > 0) {
       const section = sectionStack.pop();
-      note.sections.push({
-        label: section.label,
-        range: { start: section.start, end },
-      });
+      if (section) {
+        note.sections.push({
+          label: section.label,
+          range: { start: section.start, end },
+        });
+      }
     }
     note.sections.sort((a, b) =>
       Position.compareTo(a.range.start, b.range.start)
@@ -386,7 +390,7 @@ export function createMarkdownParser(
     try {
       plugin.onDidInitializeParser?.(parser);
     } catch (e) {
-      handleError(plugin, 'onDidInitializeParser', undefined, e);
+      handleError(plugin, 'onDidInitializeParser', undefined, e as Error);
     }
   });
 
@@ -397,7 +401,7 @@ export function createMarkdownParser(
         try {
           return plugin.onWillParseMarkdown?.(acc) || acc;
         } catch (e) {
-          handleError(plugin, 'onWillParseMarkdown', uri, e);
+          handleError(plugin, 'onWillParseMarkdown', uri, e as Error);
           return acc;
         }
       }, markdown);
@@ -425,7 +429,7 @@ export function createMarkdownParser(
         try {
           plugin.onWillVisitTree?.(tree, note);
         } catch (e) {
-          handleError(plugin, 'onWillVisitTree', uri, e);
+          handleError(plugin, 'onWillVisitTree', uri, e as Error);
         }
       });
       visit(tree, node => {
@@ -446,7 +450,7 @@ export function createMarkdownParser(
               try {
                 plugins[i].onDidFindProperties?.(yamlProperties, note, node);
               } catch (e) {
-                handleError(plugins[i], 'onDidFindProperties', uri, e);
+                handleError(plugins[i], 'onDidFindProperties', uri, e as Error);
               }
             }
           } catch (e) {
@@ -458,7 +462,7 @@ export function createMarkdownParser(
           try {
             plugins[i].visit?.(node, note, markdown);
           } catch (e) {
-            handleError(plugins[i], 'visit', uri, e);
+            handleError(plugins[i], 'visit', uri, e as Error);
           }
         }
       });
@@ -466,7 +470,7 @@ export function createMarkdownParser(
         try {
           plugin.onDidVisitTree?.(tree, note);
         } catch (e) {
-          handleError(plugin, 'onDidVisitTree', uri, e);
+          handleError(plugin, 'onDidVisitTree', uri, e as Error);
         }
       });
       Logger.debug('Result:', note);

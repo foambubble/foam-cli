@@ -102,9 +102,10 @@ export class FoamGraph implements IDisposable {
     const resourcesToUpdate: URI[] = [];
     for (const placeholderId of this.placeholders.keys()) {
       // quick and dirty check for affected resources
-      if (resource.uri.path.endsWith(placeholderId + '.md')) {
+      const backlink = this.backlinks.get(placeholderId)
+      if (resource.uri.path.endsWith(placeholderId + '.md') && backlink) {
         resourcesToUpdate.push(
-          ...this.backlinks.get(placeholderId).map(c => c.source)
+          ...backlink.map(c => c.source)
         );
         // resourcesToUpdate.push(resource);
       }

@@ -571,7 +571,7 @@ export class TextmateSnippet extends Marker {
 		resolvedVariables.forEach(variable => {
 			result += this.value.substring(i, variable.pos);
 			result += variable.toString();
-			i = variable.endPos;
+			i = variable.endPos ?? i;
 		});
 		result += this.value.substring(i);
 

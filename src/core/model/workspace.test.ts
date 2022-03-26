@@ -76,7 +76,7 @@ describe('Workspace resources', () => {
       ['note2', '/note2.md'],
     ]) {
       expect(ws.listByIdentifier(reference)[0].uri.path).toEqual(path);
-      expect(ws.find(reference).uri.path).toEqual(path);
+      expect(ws.find(reference)?.uri.path).toEqual(path);
     }
   });
 
@@ -86,7 +86,7 @@ describe('Workspace resources', () => {
       .set(createTestNote({ uri: 'file.md' }));
 
     const res = ws.find('test-file#my-section');
-    expect(res.uri.fragment).toEqual('my-section');
+    expect(res?.uri.fragment).toEqual('my-section');
   });
 });
 

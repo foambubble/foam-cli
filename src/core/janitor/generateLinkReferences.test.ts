@@ -47,9 +47,9 @@ describe('generateLinkReferences', () => {
 
     const actual = generateLinkReferences(note, _workspace, false);
 
-    expect(actual!.range.start).toEqual(expected.range.start);
-    expect(actual!.range.end).toEqual(expected.range.end);
-    expect(actual!.newText).toEqual(expected.newText);
+    expect(actual?.range.start).toEqual(expected.range.start);
+    expect(actual?.range.end).toEqual(expected.range.end);
+    expect(actual?.newText).toEqual(expected.newText);
   });
 
   it('should remove link definitions from a file that has them, if no links are present', () => {
@@ -62,9 +62,9 @@ describe('generateLinkReferences', () => {
 
     const actual = generateLinkReferences(note, _workspace, false);
 
-    expect(actual!.range.start).toEqual(expected.range.start);
-    expect(actual!.range.end).toEqual(expected.range.end);
-    expect(actual!.newText).toEqual(expected.newText);
+    expect(actual?.range.start).toEqual(expected.range.start);
+    expect(actual?.range.end).toEqual(expected.range.end);
+    expect(actual?.newText).toEqual(expected.newText);
   });
 
   it('should update link definitions if they are present but changed', () => {
@@ -82,9 +82,9 @@ describe('generateLinkReferences', () => {
 
     const actual = generateLinkReferences(note, _workspace, false);
 
-    expect(actual!.range.start).toEqual(expected.range.start);
-    expect(actual!.range.end).toEqual(expected.range.end);
-    expect(actual!.newText).toEqual(expected.newText);
+    expect(actual?.range.start).toEqual(expected.range.start);
+    expect(actual?.range.end).toEqual(expected.range.end);
+    expect(actual?.newText).toEqual(expected.newText);
   });
 
   it('should not cause any changes if link reference definitions were up to date', () => {
@@ -112,9 +112,9 @@ describe('generateLinkReferences', () => {
 
     const actual = generateLinkReferences(note, _workspace, false);
 
-    expect(actual!.range.start).toEqual(expected.range.start);
-    expect(actual!.range.end).toEqual(expected.range.end);
-    expect(actual!.newText).toEqual(expected.newText);
+    expect(actual?.range.start).toEqual(expected.range.start);
+    expect(actual?.range.end).toEqual(expected.range.end);
+    expect(actual?.newText).toEqual(expected.newText);
   });
 
   it('should not remove explicitly entered link references', () => {
@@ -155,5 +155,5 @@ describe('generateLinkReferences', () => {
  * @param text starting text, using a \n line separator
  */
 function textForNote(note: Resource, text: string): string {
-  return text.split('\n').join(note.source.eol);
+  return text.split('\n').join(note?.source.eol);
 }

@@ -13,7 +13,7 @@ import { promises, constants } from 'fs';
  *     given input and authority is undefined except for UNC paths.
  */
 export function fromFsPath(path: string): [string, string] {
-  let authority: string;
+  let authority: string = '';
   if (isUNCShare(path)) {
     [path, authority] = parseUNCShare(path);
     path = path.replace(/\\/g, '/');

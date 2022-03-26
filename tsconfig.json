@@ -7,9 +7,11 @@
     "rootDir": "src",
     "strict": true,
     "esModuleInterop": true,
-    "target": "es2017"
+    "target": "es2017",
+    "lib": ["ES2019", "ES2020"]
   },
   "include": [
-    "src/**/*"
+    "src/**/*",
+    "types/**/*"
   ],
 }

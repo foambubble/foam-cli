@@ -1,18 +1,24 @@
+import GithubSlugger from 'github-slugger';
 import { Command, flags } from '@oclif/command';
 import ora from 'ora';
-import {
-  bootstrap,
-  createConfigFromFolders,
-  generateLinkReferences,
-  generateHeading,
-  getKebabCaseFileName,
-  applyTextEdit,
-  FileDataStore,
-  isNote,
-} from 'foam-core';
+import { bootstrap } from '../core/model/foam';
+import { URI } from '../core/model/uri';
+import { Resource } from '../core/model/note';
+import { generateHeading, generateLinkReferences } from '../core/janitor';
+import { applyTextEdit } from '../core/janitor/apply-text-edit';
+import { FileDataStore, Matcher } from '../core/services/datastore';
 import { writeFileToDisk } from '../utils/write-file-to-disk';
 import { renameFile } from '../utils/rename-file';
 import { isValidDirectory } from '../utils';
+
+const slugger = new GithubSlugger();
+
+const isNote = (resource: Resource): resource is Resource => resource.type === 'note'
+
+const getKebabCaseFileName = (fileName: string) => {
+  const kebabCasedFileName = slugger.slug(fileName);
+  return kebabCasedFileName === fileName ? null : kebabCasedFileName;
+};
 
 // @todo: Refactor 'migrate' and 'janitor' commands and avoid repeatition
 export default class Migrate extends Command {
@@ -42,11 +48,16 @@ Successfully generated link references and heading!
     const { args, flags } = this.parse(Migrate);
 
     const { workspacePath = './' } = args;
-    const config = createConfigFromFolders([workspacePath]);
+
+    const matcher = new Matcher(
+      [URI.file(workspacePath)],
+      ['**/*'],
+      []
+    );
+    const dataStore = new FileDataStore();
 
     if (isValidDirectory(workspacePath)) {
-      const dataStore = new FileDataStore(config);
-      let workspace = (await bootstrap(config, { dataStore: dataStore})).workspace;
+      let workspace = (await bootstrap(matcher, dataStore, [])).workspace;
 
       let notes = workspace.list().filter(isNote);
 
@@ -75,7 +86,7 @@ Successfully generated link references and heading!
       spinner.text = 'Renaming files';
 
       // Reinitialize the graph after renaming files
-      workspace = (await bootstrap(config, { dataStore: dataStore})).workspace;
+      workspace = (await bootstrap(matcher, dataStore, [])).workspace;
 
       notes = workspace.list().filter(isNote);
 

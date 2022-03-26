@@ -64,10 +64,13 @@ export class FoamWorkspace implements IDisposable {
     const needle = normalize('/' + identifier);
     const mdNeedle =
       getExtension(needle) !== '.md' ? needle + '.md' : undefined;
-    const resources = [];
+    const resources: Resource[] = [];
     for (const key of this.resources.keys()) {
       if ((mdNeedle && key.endsWith(mdNeedle)) || key.endsWith(needle)) {
-        resources.push(this.resources.get(normalize(key)));
+        const resource = this.resources.get(normalize(key))
+        if (resource) {
+          resources.push(resource);
+        }
       }
     }
     return resources.sort((a, b) => a.uri.path.localeCompare(b.uri.path));
@@ -111,12 +114,12 @@ export class FoamWorkspace implements IDisposable {
     } else {
       if (isAbsolute(path) || isSome(baseUri)) {
         if (getExtension(path) !== '.md') {
-          const uri = baseUri.resolve(path + '.md');
-          resource = uri ? this.resources.get(normalize(uri.path)) : null;
+          const uri = baseUri?.resolve(path + '.md');
+          resource = uri ? this.resources.get(normalize(uri.path)) ?? null : null;
         }
         if (!resource) {
-          const uri = baseUri.resolve(path);
-          resource = uri ? this.resources.get(normalize(uri.path)) : null;
+          const uri = baseUri?.resolve(path);
+          resource = uri ? this.resources.get(normalize(uri.path)) ?? null : null;
         }
       }
     }
