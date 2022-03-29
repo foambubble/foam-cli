@@ -1,6 +1,6 @@
 import * as fs from 'fs';
 import * as path from 'path';
-import { URI } from 'foam-core';
+import { URI } from '../core/model/uri';
 
 /**
  *
@@ -8,7 +8,7 @@ import { URI } from 'foam-core';
  * @param newFileName  "new file name" without the extension
  */
 export const renameFile = async (fileUri: URI, newFileName: string) => {
-  const filePath = fileUri.fsPath;
+  const filePath = fileUri.toFsPath();
   const dirName = path.dirname(filePath);
   const extension = path.extname(filePath);
   const newFileUri = path.join(dirName, `${newFileName}${extension}`);

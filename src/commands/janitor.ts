@@ -1,17 +1,16 @@
 import { Command, flags } from '@oclif/command';
 import ora from 'ora';
-import {
-  bootstrap,
-  createConfigFromFolders,
-  generateLinkReferences,
-  generateHeading,
-  applyTextEdit,
-  FileDataStore,
-  URI,
-  isNote,
-} from 'foam-core';
+import { MarkdownResourceProvider } from "../core/markdown-provider";
+import { bootstrap } from '../core/model/foam';
+import { URI } from '../core/model/uri';
+import { Resource } from '../core/model/note';
+import { generateHeading, generateLinkReferences } from '../core/janitor';
+import { applyTextEdit } from '../core/janitor/apply-text-edit';
+import { FileDataStore, Matcher } from '../core/services/datastore';
 import { writeFileToDisk } from '../utils/write-file-to-disk';
 import { isValidDirectory } from '../utils';
+
+const isNote = (resource: Resource): resource is Resource => resource.type === 'note'
 
 export default class Janitor extends Command {
   static description =
@@ -41,8 +40,14 @@ export default class Janitor extends Command {
     const { workspacePath = './' } = args;
 
     if (isValidDirectory(workspacePath)) {
-      const config = createConfigFromFolders([URI.file(workspacePath)]);
-      const workspace = (await bootstrap(config, { dataStore: new FileDataStore(config)}))
+      const matcher = new Matcher(
+        [URI.file(workspacePath)],
+        ['**/*'],
+        []
+      );
+      const dataStore = new FileDataStore();
+      const markdownProvider = new MarkdownResourceProvider(matcher);
+      const workspace = (await bootstrap(matcher, dataStore, [markdownProvider]))
         .workspace;
 
       const notes = workspace.list().filter(isNote);
