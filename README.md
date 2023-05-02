@@ -65,7 +65,7 @@ EXAMPLE
   $ foam-cli janitor path-to-foam-workspace
 ```
 
-_See code: [src/commands/janitor.ts](https://github.com/foambubble/foam/blob/v0.11.0/src/commands/janitor.ts)_
+_See code: [src/commands/janitor.ts](src/commands/janitor.ts)_
 
 ## `foam migrate [WORKSPACEPATH]`
 
@@ -84,7 +84,7 @@ EXAMPLE
   Successfully generated link references and heading!
 ```
 
-_See code: [src/commands/migrate.ts](https://github.com/foambubble/foam/blob/v0.11.0/src/commands/migrate.ts)_
+_See code: [src/commands/migrate.ts](src/commands/migrate.ts)_
 <!-- commandsstop -->
 
 ## Development
